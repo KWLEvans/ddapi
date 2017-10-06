@@ -9,13 +9,17 @@
         function __construct($username, $password, $email = NULL, $id = NULL)
         {
             $this->username = $username;
-            $this->password = $password;
+            $this->password = password_hash($password, PASSWORD_DEFAULT);
             $this->email = $email;
             $this->id = $id;
         }
 
-        function getCharacters() {
-            return Character::getAllByUser($this->id);
+        function getUserName() {
+            return $this->username;
+        }
+
+        function getEmail() {
+            return $this->email;
         }
 
         function save()
@@ -23,6 +27,10 @@
             $save = $GLOBALS['DB']->prepare("INSERT INTO users (username, password, email) VALUES (:username, :password, :email);");
             $save->execute([':username' => $this->username, ':password' => $this->password, ':email' => $this->email]);
             $this->id = $GLOBALS['DB']->lastInsertId();
+        }
+
+        function verify($password) {
+            return password_verify($password, $this->password);
         }
 
         static function deleteAll()
@@ -39,7 +47,7 @@
 
         static function findByUsername($username)
         {
-            $returned_user = $GLOBALS['DB']->prepare("SELECT * FROM users WHERE username = ':username';");
+            $returned_user = $GLOBALS['DB']->prepare("SELECT * FROM users WHERE username = :username;");
             $returned_user->execute([':username' => $username]);
             $user = $returned_user->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'User', ['username', 'password', 'email', 'id']);
             if ($user) {
@@ -51,7 +59,7 @@
 
         static function findByEmail($email)
         {
-            $returned_user = $GLOBALS['DB']->prepare("SELECT * FROM users WHERE email = ':email';");
+            $returned_user = $GLOBALS['DB']->prepare("SELECT * FROM users WHERE email = :email;");
             $returned_user->execute([':email' => $email]);
             $user = $returned_user->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'User', ['username', 'password', 'email', 'id']);
             if ($user) {
@@ -72,11 +80,22 @@
             return $users;
         }
 
-        static function newUser($username, $password, $email)
+        static function new($username, $password, $email)
         {
-            if (!findByUsername($username) && !findByEmail($email)) {
+            if (!User::findByUsername($username) && !User::findByEmail($email)) {
                 $user = new User($username, $password, $email);
                 $user->save();
+            } else {
+                return false;
+            }
+        }
+
+        static function verifyUser($username, $password) {
+            $user = User::findByUsername($username);
+            if ($user->verify($password)) {
+                return true;
+            } else {
+                return false;
             }
         }
     }
