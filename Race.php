@@ -55,9 +55,6 @@
         static function deleteAll()
         {
             $GLOBALS['DB']->exec('DELETE FROM races;');
-            $GLOBALS['DB']->exec('DELETE FROM race_stats;');
-            $GLOBALS['DB']->exec('DELETE FROM race_racial_abilities;');
-            $GLOBALS['DB']->exec('DELETE FROM racial_abilities;');
         }
 
     }
