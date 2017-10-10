@@ -36,7 +36,8 @@
             // Assert
             $this->assertEquals($username, $result[0]->getUserName());
             $this->assertEquals($email, $result[0]->getEmail());
-            $this->assertTrue(User::verifyUser($username, $password));
+            $this->assertTrue(User::verifyByPassword($username, $password));
+            $this->assertTrue(User::verifyByToken($test_user->getToken()));
         }
 
         function test_findByEmail()
@@ -54,7 +55,8 @@
             // Assert
             $this->assertEquals($username, $result->getUserName());
             $this->assertEquals($email, $result->getEmail());
-            $this->assertTrue(User::verifyUser($username, $password));
+            $this->assertTrue(User::verifyByPassword($username, $password));
+            $this->assertTrue(User::verifyByToken($test_user->getToken()));
         }
 
         function test_findByUsername()
@@ -72,7 +74,8 @@
             // Assert
             $this->assertEquals($username, $result->getUserName());
             $this->assertEquals($email, $result->getEmail());
-            $this->assertTrue(User::verifyUser($username, $password));
+            $this->assertTrue(User::verifyByPassword($username, $password));
+            $this->assertTrue(User::verifyByToken($test_user->getToken()));
         }
 
         function test_getAll()
@@ -95,10 +98,12 @@
             // Assert
             $this->assertEquals($username1, $result[0]->getUserName());
             $this->assertEquals($email1, $result[0]->getEmail());
-            $this->assertTrue(User::verifyUser($username1, $password1));
+            $this->assertTrue(User::verifyByPassword($username1, $password1));
+            $this->assertTrue(User::verifyByToken($test_user->getToken()));
             $this->assertEquals($username2, $result[1]->getUserName());
             $this->assertEquals($email2, $result[1]->getEmail());
-            $this->assertTrue(User::verifyUser($username1, $password1));
+            $this->assertTrue(User::verifyByPassword($username1, $password1));
+            $this->assertTrue(User::verifyByToken($test_user2->getToken()));
         }
 
         function test_new()
@@ -109,13 +114,14 @@
             $email = "test@email.com";
 
             //Act
-            User::new($username, $password, $email);
+            $token = User::new($username, $password, $email);
             $result = User::getAll();
 
             //Assert
             $this->assertEquals($username, $result[0]->getUserName());
             $this->assertEquals($email, $result[0]->getEmail());
-            $this->assertTrue(User::verifyUser($username, $password));
+            $this->assertTrue(User::verifyByPassword($username, $password));
+            $this->assertTrue(User::verifyByToken($token));
         }
 
         function test_new_duplicate_username()
