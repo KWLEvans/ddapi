@@ -13,9 +13,19 @@
             $this->id = $id;
         }
 
-        function addRace($race_id) {
+        function addRace($race_id)
+        {
             $exec = $GLOBALS['DB']->prepare("INSERT INTO race_racial_abilities (race_id, racial_ability_id) VALUES (:race_id, :racial_ability_id);");
             return $exec->execute([':race_id' => $race_id, ':racial_ability_id' => $this->id]);
+        }
+
+        function build()
+        {
+            $build = array();
+            $build['name'] = $this->name;
+            $build['description'] = $this->description;
+            $build['id'] = $this->id;
+            return $build;
         }
 
         function getId()
@@ -28,6 +38,26 @@
             $save = $GLOBALS['DB']->prepare("INSERT INTO racial_abilities (name, description) VALUES (:name, :description);");
             $save->execute([':name' => $this->name, ':description' => $this->description]);
             $this->id = $GLOBALS['DB']->lastInsertId();
+        }
+
+        static function buildAll()
+        {
+            $abilities = RacialAbility::getAll();
+            $builds = array();
+            for ($i = 0; $i < count($abilities); $i++) {
+                $builds[] = $abilities[$i]->build();
+            }
+            return $builds;
+        }
+
+        static function buildByRace($race_id)
+        {
+            $abilities = RacialAbility::getByRace($race_id);
+            $builds = array();
+            for ($i = 0; $i < count($abilities); $i++) {
+                $builds[] = $abilities[$i]->build();
+            }
+            return $builds;
         }
 
         static function deleteAll()

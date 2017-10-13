@@ -30,6 +30,24 @@
             }
         }
 
+        function build()
+        {
+            $build = array();
+            $build['name'] = $this->name;
+            $build['flavor'] = $this->flavor;
+            $build['size'] = $this->size;
+            $build['speed'] = $this->speed;
+            $build['stats'] = $this->stats;
+
+            $abilities = $this->getAbilities();
+
+            for ($i = 0; $i < count($abilities); $i++) {
+                $build['abilities'][] = $abilities[$i]->build();
+            }
+
+            return $build;
+        }
+
         function getAbilities()
         {
             $this->abilities = array();
@@ -59,18 +77,24 @@
         }
 
         function save() {
-            //save to races
             $save = $GLOBALS['DB']->prepare("INSERT INTO races (name, flavor, size, speed) VALUES (:name, :flavor, :size, :speed);");
             $save->execute([':name' => $this->name, ':flavor' => $this->flavor, ':size' => $this->size, ':speed' => $this->speed]);
             $this->id = $GLOBALS['DB']->lastInsertId();
 
             $this->saveStats();
 
-            //save racial abilities from array of ids
+            $this->saveRacialAbilities();
+        }
+
+        function saveRacialAbilities() {
+            $save_statement = "";
+
             for ($i = 0; $i < count($this->abilities); $i++) {
-                $ability = RacialAbility::getById($this->abilities[$i]);
-                $ability->addRace($this->id);
+                $save_statement = $save_statement . "INSERT INTO race_racial_abilities (race_id, racial_ability_id) VALUES (" . $this->id . ", " . $this->abilities[$i] . ");";
             }
+
+            $save = $GLOBALS['DB']->prepare($save_statement);
+            $save->execute();
         }
 
         function saveStats() {
