@@ -9,15 +9,53 @@
         private $abilities;
         private $id;
 
-        function __construct($name, $flavor, $size, $speed, $stats, $id = NULL)
+        function __construct($name, $flavor, $size, $speed, $stats = NULL, $abilities = NULL, $id = NULL)
         {
             $this->name = $name;
             $this->flavor = $flavor;
             $this->size = $size;
-            $this->speed = $speed;
-            $this->stats = $stats;
-            $this->abilities = $abilities;
+            $this->speed = (int) $speed;
             $this->id = $id;
+
+            if ($stats == NULL) {
+                $this->getStats();
+            } else {
+                $this->stats = $stats;
+            }
+
+            if ($abilities == NULL) {
+                $this->getAbilities();
+            } else {
+                $this->abilities = $abilities;
+            }
+        }
+
+        function getAbilities()
+        {
+            $this->abilities = array();
+            $abilities = RacialAbility::getByRace($this->id);
+            for ($i = 0; $i < count($abilities); $i++) {
+                $this->abilities[] = $abilities[$i]->getId();
+            }
+            return $abilities;
+        }
+
+        function getStats()
+        {
+            $query = "SELECT name FROM race_stats WHERE race_id = " . $this->id . ";";
+            $returned_stats = $GLOBALS['DB']->query($query);
+
+            if ($returned_stats) {
+                $returned_stats = $returned_stats->fetchAll();
+                $stats = array();
+                for ($i = 0; $i < count($returned_stats); $i++) {
+                    $stats[] = $returned_stats[$i]['name'];
+                }
+            } else {
+                $stats = array();
+            }
+            $this->stats = $stats;
+            return $stats;
         }
 
         function save() {
@@ -26,35 +64,51 @@
             $save->execute([':name' => $this->name, ':flavor' => $this->flavor, ':size' => $this->size, ':speed' => $this->speed]);
             $this->id = $GLOBALS['DB']->lastInsertId();
 
-
-            //save racial stat boosts
-            $save_statement = "";
-            $execute_array = [':race_id' => $this->id];
-
-            for ($i = 0; $i < count($this->stats); $i++) {
-                $save_statement . "INSERT INTO race_stats (race_id, name) VALUES (:race_id, :name" . $i . ");";
-                $execute_array[':name' . $i] = $this->stats[$i];
-            }
-
-            $save_statement . "INSERT INTO race_stats (race_id, name) VALUES (:race_id, :name2);";
-            $save = $GLOBALS['DB']->prepare($save_statement);
-            $save->execute($execute_array);
-
+            $this->saveStats();
 
             //save racial abilities from array of ids
-            $save_statement = "";
-            $execute_array = [':race_id' => $this->id];
             for ($i = 0; $i < count($this->abilities); $i++) {
-                $save_statement . "INSERT INTO race_racial_abilities (race_id, racial_ability_id) VALUES (:race_id, :racial_ability_id" . $i . ");";
-                $execute_array[':racial_ability_id' . $i] = $this->abilities[$i];
+                $ability = RacialAbility::getById($this->abilities[$i]);
+                $ability->addRace($this->id);
             }
+        }
+
+        function saveStats() {
+            $save_statement = "";
+
+            for ($i = 0; $i < count($this->stats); $i++) {
+                $save_statement = $save_statement . "INSERT INTO race_stats (race_id, name) VALUES (" . $this->id . ", '" . $this->stats[$i] . "');";
+            }
+
             $save = $GLOBALS['DB']->prepare($save_statement);
-            $save->execute($execute_array);
+            $save->execute();
         }
 
         static function deleteAll()
         {
             $GLOBALS['DB']->exec('DELETE FROM races;');
+        }
+
+        static function getAll()
+        {
+            $returned_races = $GLOBALS['DB']->query("SELECT * FROM races;");
+            if ($returned_races) {
+                $returned_races = $returned_races->fetchAll();
+                $races = array();
+                for ($i = 0; $i < count($returned_races); $i++) {
+                    $name = $returned_races[$i]['name'];
+                    $flavor = $returned_races[$i]['flavor'];
+                    $size = $returned_races[$i]['size'];
+                    $speed = $returned_races[$i]['speed'];
+                    $stats = NULL;
+                    $abilities = NULL;
+                    $id = $returned_races[$i]['id'];
+                    $races[] = new Race($name, $flavor, $size, $speed, $stats, $abilities, $id);
+                }
+            } else {
+                $races = [];
+            }
+            return $races;
         }
 
     }
