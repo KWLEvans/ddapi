@@ -60,6 +60,16 @@
             return array($school_info[0]['name'], $school_info[0]['id']);
         }
 
+        static function buildAll()
+        {
+            $build = array();
+            $spells = Spell::getAll();
+            for ($i = 0; $i < count($spells); $i++) {
+                $build[] = $spells[$i]->build();
+            }
+            return $build;
+        }
+
         static function deleteAll()
         {
             $GLOBALS['DB']->exec('DELETE FROM spells;');

@@ -116,6 +116,16 @@
             $save->execute();
         }
 
+        static function buildAll()
+        {
+            $build = array();
+            $races = Spell::getAll();
+            for ($i = 0; $i < count($races); $i++) {
+                $build[] = $races[$i]->build();
+            }
+            return $build;
+        }
+
         static function deleteAll()
         {
             $GLOBALS['DB']->exec('DELETE FROM races;');
