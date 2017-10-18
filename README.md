@@ -1,22 +1,30 @@
-RacialAbility
+# Data Structure
+---
 
-build:
+## RacialAbility
+
+### build:
+```php
 array(
     'name' => ability name,
     'description' => ability description,
     'id' => unique id
-    )
+)
+```
 
-buildAll
+### buildAll
+```php
 array(
     racial_ability_build1,
     racial_ability_build2,
 ...)
+```
 
 
-Race
+## Race
 
-build:
+### build:
+```php
 array(
     'name' => race name,
     'flavor' => race flavor text,
@@ -40,17 +48,21 @@ array(
         ...),
     'id' => unique race id
 )
+```
 
-buildAll:
+### buildAll:
+```php
 array(
     race_build1,
     race_build2,
 ...)
+```
 
 
-Spell
+## Spell
 
-build:
+### build:
+```php
 array(
     'name' => spell name,
     'school' => array(
@@ -65,9 +77,12 @@ array(
     'description' => text spell description,
     'id' => unique spell id
 )
+```
 
-buildAll:
+### buildAll:
+```php
 array(
     spell_build1,
     spell_build2,
 ...)
+```
