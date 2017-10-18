@@ -80,6 +80,7 @@
             $build['speed'] = $speed;
             $build['stats'] = $stats;
             $build['abilities'] = array($test_racial_ability->build(), $test_racial_ability2->build());
+            $build['id'] = $test_race->getId();
 
             //Act
             $result = $test_race->build();

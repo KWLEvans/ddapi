@@ -1,6 +1,7 @@
 <?php
 
-    class Race {
+    class Race
+    {
         private $name;
         private $flavor;
         private $size;
@@ -45,6 +46,8 @@
                 $build['abilities'][] = $abilities[$i]->build();
             }
 
+            $build['id'] = $this->id;
+
             return $build;
         }
 
@@ -56,6 +59,11 @@
                 $this->abilities[] = $abilities[$i]->getId();
             }
             return $abilities;
+        }
+
+        function getId()
+        {
+            return $this->id;
         }
 
         function getStats()
@@ -111,6 +119,7 @@
         static function deleteAll()
         {
             $GLOBALS['DB']->exec('DELETE FROM races;');
+            $GLOBALS['DB']->exec('DELETE FROM race_stats;');
         }
 
         static function getAll()
