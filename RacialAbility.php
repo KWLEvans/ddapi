@@ -19,11 +19,18 @@
             return $exec->execute([':race_id' => $race_id, ':racial_ability_id' => $this->id]);
         }
 
+        function addSpell($spell_id)
+        {
+            $exec = $GLOBALS['DB']->prepare("INSERT INTO racial_ability_spells (racial_ability_id, spell_id) VALUES (:racial_ability_id, :spell_id);");
+            return $exec->execute([':racial_ability_id' => $this->id, ':spell_id' => $spell_id]);
+        }
+
         function build()
         {
             $build = array();
             $build['name'] = $this->name;
             $build['description'] = $this->description;
+            $build['spells'] = Spell::buildByRacialAbility($this->id);
             $build['id'] = $this->id;
             return $build;
         }
@@ -63,6 +70,7 @@
         static function deleteAll()
         {
             $GLOBALS['DB']->exec('DELETE FROM race_racial_abilities;');
+            $GLOBALS['DB']->exec('DELETE FROM racial_ability_spells;');
             $GLOBALS['DB']->exec('DELETE FROM racial_abilities;');
         }
 

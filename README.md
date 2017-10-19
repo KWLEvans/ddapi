@@ -8,11 +8,24 @@
 array(
     'name' => ability name,
     'description' => ability description,
+    'spells' => array(
+        applicable_spell_build1,
+        applicable_spell_build2,
+        empty if no applicable spells,
+        ...)
     'id' => unique id
 )
 ```
 
 ### buildAll
+```php
+array(
+    racial_ability_build1,
+    racial_ability_build2,
+...)
+```
+
+### buildByRace
 ```php
 array(
     racial_ability_build1,
@@ -80,6 +93,22 @@ array(
 ```
 
 ### buildAll:
+```php
+array(
+    spell_build1,
+    spell_build2,
+...)
+```
+
+### buildByRacialAbility:
+```php
+array(
+    spell_build1,
+    spell_build2,
+...)
+```
+
+### buildByClass:
 ```php
 array(
     spell_build1,

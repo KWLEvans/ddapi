@@ -6,6 +6,7 @@
     */
 
     require_once "RacialAbility.php";
+    require_once "Spell.php";
     use PHPUnit\Framework\TestCase;
 
     $server = 'mysql:host=localhost:8889;dbname=ddapi_test';
@@ -18,6 +19,7 @@
         protected function tearDown()
         {
             RacialAbility::deleteAll();
+            Spell::deleteAll();
         }
 
         function test_save()
@@ -65,9 +67,22 @@
             $test_racial_ability = new RacialAbility($name, $description);
             $test_racial_ability->save();
 
+            $name2 = "Test Spell";
+            $school2 = 3;
+            $level2 = 2;
+            $casting_time2 = "1 round";
+            $cast_range2 = "25 feet";
+            $components2 = "V, S, M (a tiny strip of white cloth)";
+            $duration2 = "5 rounds";
+            $description2 = "This is a very complex description of what this spell does. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects.";
+            $test_spell = new Spell($name2, $school2, $level2, $casting_time2, $cast_range2, $components2, $duration2, $description2);
+            $test_spell->save();
+            $test_spell->addRacialAbility($test_racial_ability->getId());
+
             $build = array();
             $build['name'] = $name;
             $build['description'] = $description;
+            $build['spells'] = array($test_spell->build());
             $build['id'] = $test_racial_ability->getId();
 
             //Act
