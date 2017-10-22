@@ -41,6 +41,12 @@
             return $build;
         }
 
+        function addClass($class_id)
+        {
+            $exec = $GLOBALS['DB']->prepare("INSERT INTO class_spells (class_id, spell_id) VALUES (:class_id, :spell_id);");
+            return $exec->execute([':class_id' => $class_id, ':spell_id' => $this->id]);
+        }
+
         function addRacialAbility($racial_ability_id)
         {
             $exec = $GLOBALS['DB']->prepare("INSERT INTO racial_ability_spells (racial_ability_id, spell_id) VALUES (:racial_ability_id, :spell_id);");
@@ -76,6 +82,16 @@
             return $build;
         }
 
+        static function buildByClass($class_id)
+        {
+            $spells = Spell::getByClass($class_id);
+            $builds = array();
+            for ($i = 0; $i < count($spells); $i++) {
+                $builds[] = $spells[$i]->build();
+            }
+            return $builds;
+        }
+
         static function buildByRacialAbility($racial_ability_id)
         {
             $spells = Spell::getByRacialAbility($racial_ability_id);
@@ -97,6 +113,20 @@
             $returned_spells = $GLOBALS['DB']->query("SELECT * FROM spells;");
             if ($returned_spells) {
                 $spells = $returned_spells->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Spell', ['name', 'school_id', 'level', 'casting_time', 'cast_range', 'components', 'duration', 'description', 'id']);
+            } else {
+                $spells = [];
+            }
+            return $spells;
+        }
+
+        static function getByClass($class_id)
+        {
+            $returned_spells = $GLOBALS['DB']->prepare("SELECT spells.name, spells.school_id, spells.level, spells.casting_time, spells.cast_range, spells.components, spells.duration, spells.description, spells.id FROM spells JOIN class_spells ON spells.id=class_spells.spell_id WHERE class_spells.class_id = :class_id");
+            $returned_spells->bindParam(':class_id', $class_id);
+            $returned_spells->execute();
+
+            if ($returned_spells) {
+                $spells = $returned_spells->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Spell', ['spells.name', 'spells.school_id', 'spells.level', 'spells.casting_time', 'spells.cast_range', 'spells.components', 'spells.duration', 'spells.description', 'spells.id']);
             } else {
                 $spells = [];
             }
