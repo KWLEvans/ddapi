@@ -1,5 +1,7 @@
 <?php
 
+    require_once "RacialAbility.php";
+
     class Race
     {
         private $name;
@@ -119,7 +121,7 @@
         static function buildAll()
         {
             $build = array();
-            $races = Spell::getAll();
+            $races = Race::getAll();
             for ($i = 0; $i < count($races); $i++) {
                 $build[] = $races[$i]->build();
             }
