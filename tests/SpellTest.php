@@ -176,5 +176,27 @@
             //Assert
             $this->assertEquals($build, $result[0]);
         }
+
+        function testGetById()
+        {
+            //Arrange
+            $name = "Test Spell";
+            $school = 3;
+            $level = 2;
+            $casting_time = "1 round";
+            $cast_range = "25 feet";
+            $components = "V, S, M (a tiny strip of white cloth)";
+            $duration = "5 rounds";
+            $description = "This is a very complex description of what this spell does. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects.";
+            $test_spell = new Spell($name, $school, $level, $casting_time, $cast_range, $components, $duration, $description);
+
+            //Act
+            $test_spell->save();
+            $id = $test_spell->getId();
+            $result = Spell::getById($id);
+
+            //Assert
+            $this->assertEquals($test_spell, $result);
+        }
     }
 ?>

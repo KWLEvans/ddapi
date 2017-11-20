@@ -153,6 +153,24 @@
             }
             return $classes;
         }
+
+        static function getById($id)
+        {
+            $returned_class = $GLOBALS['DB']->prepare("SELECT * FROM classes WHERE id = :id;");
+            $returned_class->execute(array(':id' => $id));
+            if ($returned_class) {
+                $class = $returned_class->fetchAll();
+                $name = $class[0]['name'];
+                $flavor = $class[0]['flavor'];
+                $hit_die = $class[0]['hit_die'];
+                $primary_attribute = $class[0]['primary_attribute'];
+                $id = $class[0]['id'];
+                $class_output = new PlayerClass($name, $flavor, $hit_die, $primary_attribute, $id);
+            } else {
+                $class_output = null;
+            }
+            return $class_output;
+        }
     }
 
 ?>

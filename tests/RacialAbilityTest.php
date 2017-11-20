@@ -22,7 +22,7 @@
             Spell::deleteAll();
         }
 
-        function test_save()
+        function testSave()
         {
             //Arrange
             $name = "test ability";
@@ -37,7 +37,23 @@
             $this->assertEquals($test_racial_ability, $result[0]);
         }
 
-        function test_getByRace()
+        function testGetById()
+        {
+            //Arrange
+            $name = "test ability";
+            $description = "This is a very long description of a racial ability. So long in fact that it's longer than 255 characters just to make sure that it's saving as text and not as a varchar situation. I don't know how many characters 255 is, so I guess I'll just keep typing. Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... ";
+            $test_racial_ability = new RacialAbility($name, $description);
+
+            //Act
+            $test_racial_ability->save();
+            $id = $test_racial_ability->getId();
+            $result = RacialAbility::getById($id);
+
+            //Assert
+            $this->assertEquals($test_racial_ability, $result);
+        }
+
+        function testGetByRace()
         {
             //Arrange
             $name = "test ability";
@@ -59,7 +75,7 @@
             $this->assertEquals($test_racial_ability2, $test[0]);
         }
 
-        function test_build()
+        function testBuild()
         {
             //Arrange
             $name = "test ability";
@@ -92,7 +108,7 @@
             $this->assertEquals($build, $result);
         }
 
-        function test_buildByRace()
+        function testBuildByRace()
         {
             //Arrange
             $name = "test ability";
@@ -116,7 +132,7 @@
             $this->assertEquals($build, $result);
         }
 
-        function test_buildAll()
+        function testBuildAll()
         {
             //Arrange
             $name = "test ability";

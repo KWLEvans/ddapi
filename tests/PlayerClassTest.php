@@ -21,7 +21,7 @@
             PlayerClass::deleteAll();
         }
 
-        function test_save()
+        function testSave()
         {
             //Arrange
             $name = "test class";
@@ -38,7 +38,25 @@
             $this->assertEquals($test_class, $result[0]);
         }
 
-        function test_buildProficiencies()
+        function testGetById()
+        {
+            //Arrange
+            $name = "test class";
+            $flavor = "This is a very long description of a class. So long in fact that it's longer than 255 characters just to make sure that it's saving as text and not as a varchar situation. I don't know how many characters 255 is, so I guess I'll just keep typing. Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... ";
+            $hit_die = "d8";
+            $primary_attribute = "Strength";
+            $test_class = new PlayerClass($name, $flavor, $hit_die, $primary_attribute);
+
+            //Act
+            $test_class->save();
+            $id = $test_class->getId();
+            $result = PlayerClass::getById($id);
+
+            //Assert
+            $this->assertEquals($test_class, $result);
+        }
+
+        function testBuildProficiencies()
         {
             //Arrange
             $name = "test class";
@@ -83,7 +101,7 @@
             $this->assertEquals($proficiencies, $result);
         }
 
-        function test_buildSavingThrows()
+        function testBuildSavingThrows()
         {
             //Arrange
             $name = "test class";

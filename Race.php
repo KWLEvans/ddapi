@@ -156,6 +156,25 @@
             return $races;
         }
 
+        static function getById($id)
+        {
+            $returned_race = $GLOBALS['DB']->prepare("SELECT * FROM races WHERE id = :id;");
+            $returned_race->execute(array(':id' => $id));
+            if ($returned_race) {
+                $race = $returned_race->fetchAll();
+                $name = $race[0]['name'];
+                $flavor = $race[0]['flavor'];
+                $size = $race[0]['size'];
+                $speed = $race[0]['speed'];
+                $stats = NULL;
+                $abilities = NULL;
+                $id = $race[0]['id'];
+                $race_output = new Race($name, $flavor, $size, $speed, $stats, $abilities, $id);
+            } else {
+                $race_output = null;
+            }
+            return $race_output;
+        }
     }
 
 ?>

@@ -133,6 +133,28 @@
             return $spells;
         }
 
+        static function getById($id)
+        {
+            $returned_spell = $GLOBALS['DB']->prepare("SELECT * FROM spells WHERE id = :id;");
+            $returned_spell->execute(array(':id' => $id));
+            if ($returned_spell) {
+                $spell = $returned_spell->fetchAll();
+                $name = $spell[0]['name'];
+                $school_id = $spell[0]['school_id'];
+                $level = $spell[0]['level'];
+                $casting_time = $spell[0]['casting_time'];
+                $cast_range = $spell[0]['cast_range'];
+                $components = $spell[0]['components'];
+                $duration = $spell[0]['duration'];
+                $description = $spell[0]['description'];
+                $id = $spell[0]['id'];
+                $spell_output = new Spell($name, $school_id, $level, $casting_time, $cast_range, $components, $duration, $description, $id);
+            } else {
+                $spell_output = null;
+            }
+            return $spell_output;
+        }
+
         static function getByRacialAbility($racial_ability_id)
         {
             $returned_spells = $GLOBALS['DB']->prepare("SELECT spells.name, spells.school_id, spells.level, spells.casting_time, spells.cast_range, spells.components, spells.duration, spells.description, spells.id FROM spells JOIN racial_ability_spells ON spells.id=racial_ability_spells.spell_id WHERE racial_ability_spells.racial_ability_id = :racial_ability_id");
