@@ -8,10 +8,10 @@
 
     date_default_timezone_set("America/Los_Angeles");
     // require_once __DIR__."/Character.php";
-    // require_once __DIR__."/PlayerClass.php";
+    require_once __DIR__."/PlayerClass.php";
     // require_once __DIR__."/Race.php";
     // require_once __DIR__."/RacialAbility.php";
-    require __DIR__."/Spell.php";
+    // require __DIR__."/Spell.php";
     // require_once __DIR__."/User.php";
 
     $server = 'mysql:host=localhost:8889;dbname=ddapi';
@@ -35,6 +35,9 @@
         $spell = new Spell($name, $school_id, $level, $casting_time, $cast_range, $components, $duration, $description, $ritual);
         $spell->save();
         echo json_encode($spell->getId());
+        return;
+    } else if ($headers['target'] == "get_saving_throws") {
+        echo json_encode(PlayerClass::getAllSavingThrows());
         return;
     } else if ($headers['target'] == "get_spell_schools") {
         echo json_encode(Spell::getAllSchools());

@@ -44,13 +44,13 @@
             $build = array();
             $build['name'] = $this->name;
             $build['flavor'] = $this->flavor;
-            $build['hit_die'] = $this->hit_die;
-            $build['primary_attribute'] = $this->primary_attribute;
-            $build['total_skills'] = $this->total_skills;
+            $build['hitDie'] = $this->hit_die;
+            $build['primaryAttribute'] = $this->primary_attribute;
+            $build['totalSkills'] = $this->total_skills;
             $build['levels'] = $this->buildLevels();
             $build['spells'] = $this->buildSpells();
             $build['proficiencies'] = $this->buildProficiencies();
-            $build['saving_throws'] = $this->buildSavingThrows();
+            $build['savingThrows'] = $this->buildSavingThrows();
             $build['id'] = $this->id;
 
             return $build;
@@ -166,6 +166,18 @@
                 $class_output = array();
             }
             return $class_output;
+        }
+
+        static function getAllSavingThrows() {
+          $saving_throws = [];
+          $returned_saving_throws = $GLOBALS['DB']->query("SELECT * FROM saving_throws;");
+          if ($returned_saving_throws) {
+              $fetched_saving_throws = $returned_saving_throws->fetchAll();
+              for ($i = 0; $i < count($fetched_saving_throws); $i++) {
+                  $saving_throws[] = array('name' => $fetched_saving_throws[$i]['name'], 'id' => $fetched_saving_throws[$i]['id']);
+              }
+          }
+          return $saving_throws;
         }
 
         static function getById($id)
