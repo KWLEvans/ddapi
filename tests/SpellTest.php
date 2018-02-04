@@ -35,7 +35,7 @@
             $components = "V, S, M (a tiny strip of white cloth)";
             $duration = "5 rounds";
             $description = "This is a very complex description of what this spell does. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects.";
-            $test_spell = new Spell($name, $school, $level, $casting_time, $cast_range, $components, $duration, $description);
+            $test_spell = new Spell($name, $school, $level, $casting_time, $cast_range, $components, $duration, $description, false);
 
             //Act
             $test_spell->save();
@@ -56,18 +56,19 @@
             $components = "V, S, M (a tiny strip of white cloth)";
             $duration = "5 rounds";
             $description = "This is a very complex description of what this spell does. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects.";
-            $test_spell = new Spell($name, $school, $level, $casting_time, $cast_range, $components, $duration, $description);
+            $test_spell = new Spell($name, $school, $level, $casting_time, $cast_range, $components, $duration, $description, false);
             $test_spell->save();
 
             $build = array();
             $build['name'] = $name;
             $build['school'] = $test_spell->getSchool();
             $build['level'] = $level;
-            $build['casting_time'] = $casting_time;
-            $build['cast_range'] = $cast_range;
+            $build['castingTime'] = $casting_time;
+            $build['castRange'] = $cast_range;
             $build['components'] = $components;
             $build['duration'] = $duration;
             $build['description'] = $description;
+            $build['ritual'] = false;
             $build['id'] = $test_spell->getId();
 
             //Act
@@ -88,7 +89,7 @@
             $components = "V, S, M (a tiny strip of white cloth)";
             $duration = "5 rounds";
             $description = "This is a very complex description of what this spell does. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects.";
-            $test_spell = new Spell($name, $school, $level, $casting_time, $cast_range, $components, $duration, $description);
+            $test_spell = new Spell($name, $school, $level, $casting_time, $cast_range, $components, $duration, $description, false);
             $test_spell->save();
 
             $name2 = "Test Spell2";
@@ -99,7 +100,7 @@
             $components2 = "V, S, M (a tiny strip of white cloth)";
             $duration2 = "5 rounds";
             $description2 = "This is a very complex description of what this spell does. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects.";
-            $test_spell2 = new Spell($name2, $school2, $level2, $casting_time2, $cast_range2, $components2, $duration2, $description2);
+            $test_spell2 = new Spell($name2, $school2, $level2, $casting_time2, $cast_range2, $components2, $duration2, $description2, false);
             $test_spell2->save();
 
             $name = "test ability";
@@ -112,11 +113,12 @@
             $build['name'] = $name2;
             $build['school'] = $test_spell2->getSchool();
             $build['level'] = $level2;
-            $build['casting_time'] = $casting_time2;
-            $build['cast_range'] = $cast_range2;
+            $build['castingTime'] = $casting_time2;
+            $build['castRange'] = $cast_range2;
             $build['components'] = $components2;
             $build['duration'] = $duration2;
             $build['description'] = $description2;
+            $build['ritual'] = false;
             $build['id'] = $test_spell2->getId();
 
             //Act
@@ -133,7 +135,8 @@
             $flavor = "This is a very long description of a class. So long in fact that it's longer than 255 characters just to make sure that it's saving as text and not as a varchar situation. I don't know how many characters 255 is, so I guess I'll just keep typing. Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... ";
             $hit_die = "d8";
             $primary_attribute = "Strength";
-            $test_class = new PlayerClass($name, $flavor, $hit_die, $primary_attribute);
+            $total_skills = 3;
+            $test_class = new PlayerClass($name, $flavor, $hit_die, $primary_attribute, $total_skills);
             $test_class->save();
 
             $name = "Test Spell";
@@ -144,7 +147,7 @@
             $components = "V, S, M (a tiny strip of white cloth)";
             $duration = "5 rounds";
             $description = "This is a very complex description of what this spell does. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects.";
-            $test_spell = new Spell($name, $school, $level, $casting_time, $cast_range, $components, $duration, $description);
+            $test_spell = new Spell($name, $school, $level, $casting_time, $cast_range, $components, $duration, $description, false);
             $test_spell->save();
 
             $name2 = "Test Spell2";
@@ -155,7 +158,7 @@
             $components2 = "V, S, M (a tiny strip of white cloth)";
             $duration2 = "5 rounds";
             $description2 = "This is a very complex description of what this spell does. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects.";
-            $test_spell2 = new Spell($name2, $school2, $level2, $casting_time2, $cast_range2, $components2, $duration2, $description2);
+            $test_spell2 = new Spell($name2, $school2, $level2, $casting_time2, $cast_range2, $components2, $duration2, $description2, false);
             $test_spell2->save();
             $test_spell2->addClass($test_class->getId());
 
@@ -163,11 +166,12 @@
             $build['name'] = $name2;
             $build['school'] = $test_spell2->getSchool();
             $build['level'] = $level2;
-            $build['casting_time'] = $casting_time2;
-            $build['cast_range'] = $cast_range2;
+            $build['castingTime'] = $casting_time2;
+            $build['castRange'] = $cast_range2;
             $build['components'] = $components2;
             $build['duration'] = $duration2;
             $build['description'] = $description2;
+            $build['ritual'] = false;
             $build['id'] = $test_spell2->getId();
 
             //Act
@@ -188,7 +192,7 @@
             $components = "V, S, M (a tiny strip of white cloth)";
             $duration = "5 rounds";
             $description = "This is a very complex description of what this spell does. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects. This is a sentece about one of its effects.";
-            $test_spell = new Spell($name, $school, $level, $casting_time, $cast_range, $components, $duration, $description);
+            $test_spell = new Spell($name, $school, $level, $casting_time, $cast_range, $components, $duration, $description, false);
 
             //Act
             $test_spell->save();

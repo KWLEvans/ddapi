@@ -8,14 +8,16 @@
         private $flavor;
         private $hit_die;
         private $primary_attribute;
+        private $total_skills;
         private $id;
 
-        function __construct($name, $flavor, $hit_die, $primary_attribute, $id = NULL)
+        function __construct($name, $flavor, $hit_die, $primary_attribute, $total_skills, $id = NULL)
         {
             $this->name = $name;
             $this->flavor = $flavor;
             $this->hit_die = $hit_die;
             $this->primary_attribute = $primary_attribute;
+            $this->total_skills = (int) $total_skills;
             $this->id = $id;
         }
 
@@ -44,6 +46,7 @@
             $build['flavor'] = $this->flavor;
             $build['hit_die'] = $this->hit_die;
             $build['primary_attribute'] = $this->primary_attribute;
+            $build['total_skills'] = $this->total_skills;
             $build['levels'] = $this->buildLevels();
             $build['spells'] = $this->buildSpells();
             $build['proficiencies'] = $this->buildProficiencies();
@@ -111,8 +114,8 @@
 
         function save()
         {
-            $save = $GLOBALS['DB']->prepare("INSERT INTO classes (name, flavor, hit_die, primary_attribute) VALUES (:name, :flavor, :hit_die, :primary_attribute);");
-            $save->execute([':name' => $this->name, ':flavor' => $this->flavor, ':hit_die' => $this->hit_die, ':primary_attribute' => $this->primary_attribute]);
+            $save = $GLOBALS['DB']->prepare("INSERT INTO classes (name, flavor, hit_die, primary_attribute, total_skills) VALUES (:name, :flavor, :hit_die, :primary_attribute, :total_skills);");
+            $save->execute([':name' => $this->name, ':flavor' => $this->flavor, ':hit_die' => $this->hit_die, ':primary_attribute' => $this->primary_attribute, ':total_skills' => $this->total_skills]);
             $this->id = $GLOBALS['DB']->lastInsertId();
         }
 
@@ -145,13 +148,24 @@
 
         static function getAll()
         {
+            $class_output = array();
             $returned_classes = $GLOBALS['DB']->query("SELECT * FROM classes;");
             if ($returned_classes) {
-                $classes = $returned_classes->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'PlayerClass', ['name', 'flavor', 'hit_die', 'primary_attribute', 'id']);
+                $classes = $returned_classes->fetchAll();
+                for ($i = 0; $i < count($classes); $i++) {
+                  $name = $classes[$i]['name'];
+                  $flavor = $classes[$i]['flavor'];
+                  $hit_die = $classes[$i]['hit_die'];
+                  $primary_attribute = $classes[$i]['primary_attribute'];
+                  $total_skills = $classes[$i]['total_skills'];
+                  $id = $classes[$i]['id'];
+                  $class = new PlayerClass($name, $flavor, $hit_die, $primary_attribute, $total_skills, $id);
+                  $class_output[] = $class;
+                }
             } else {
-                $classes = [];
+                $class_output = array();
             }
-            return $classes;
+            return $class_output;
         }
 
         static function getById($id)
@@ -164,8 +178,9 @@
                 $flavor = $class[0]['flavor'];
                 $hit_die = $class[0]['hit_die'];
                 $primary_attribute = $class[0]['primary_attribute'];
+                $total_skills = $class[0]['total_skills'];
                 $id = $class[0]['id'];
-                $class_output = new PlayerClass($name, $flavor, $hit_die, $primary_attribute, $id);
+                $class_output = new PlayerClass($name, $flavor, $hit_die, $primary_attribute, $total_skills, $id);
             } else {
                 $class_output = null;
             }

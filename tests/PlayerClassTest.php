@@ -28,7 +28,8 @@
             $flavor = "This is a very long description of a class. So long in fact that it's longer than 255 characters just to make sure that it's saving as text and not as a varchar situation. I don't know how many characters 255 is, so I guess I'll just keep typing. Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... ";
             $hit_die = "d8";
             $primary_attribute = "Strength";
-            $test_class = new PlayerClass($name, $flavor, $hit_die, $primary_attribute);
+            $total_skills = 2;
+            $test_class = new PlayerClass($name, $flavor, $hit_die, $primary_attribute, $total_skills);
 
             //Act
             $test_class->save();
@@ -45,7 +46,8 @@
             $flavor = "This is a very long description of a class. So long in fact that it's longer than 255 characters just to make sure that it's saving as text and not as a varchar situation. I don't know how many characters 255 is, so I guess I'll just keep typing. Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... ";
             $hit_die = "d8";
             $primary_attribute = "Strength";
-            $test_class = new PlayerClass($name, $flavor, $hit_die, $primary_attribute);
+            $total_skills = 2;
+            $test_class = new PlayerClass($name, $flavor, $hit_die, $primary_attribute, $total_skills);
 
             //Act
             $test_class->save();
@@ -63,7 +65,8 @@
             $flavor = "This is a very long description of a class. So long in fact that it's longer than 255 characters just to make sure that it's saving as text and not as a varchar situation. I don't know how many characters 255 is, so I guess I'll just keep typing. Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... ";
             $hit_die = "d8";
             $primary_attribute = "Strength";
-            $test_class = new PlayerClass($name, $flavor, $hit_die, $primary_attribute);
+            $total_skills = 2;
+            $test_class = new PlayerClass($name, $flavor, $hit_die, $primary_attribute, $total_skills);
             $test_class->save();
 
             $test_class->addProficiency(4);
@@ -108,7 +111,8 @@
             $flavor = "This is a very long description of a class. So long in fact that it's longer than 255 characters just to make sure that it's saving as text and not as a varchar situation. I don't know how many characters 255 is, so I guess I'll just keep typing. Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... Test... ";
             $hit_die = "d8";
             $primary_attribute = "Strength";
-            $test_class = new PlayerClass($name, $flavor, $hit_die, $primary_attribute);
+            $total_skills = 2;
+            $test_class = new PlayerClass($name, $flavor, $hit_die, $primary_attribute, $total_skills);
             $test_class->save();
 
             $test_class->addSavingThrow(4);

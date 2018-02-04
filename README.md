@@ -9,6 +9,7 @@
     flavor: (string) flavor text describing class,
     hit_die: (string) hit die (e.g. 'd8'),
     primary_attribute: (string) class primary attribute,
+    total_skills: (int) number of starting skills,
     levels: [
         (object) class_level build 1,
         (object) class_level build 2,
@@ -128,11 +129,12 @@
         id: (int) unique school id
     },
     level: (int) spell level,
-    casting_time: (string) spell casting_time,
-    cast_range: (string) spell cast_range,
+    castingTime: (string) spell casting_time,
+    castRange: (string) spell cast_range,
     components: (string) spell components,
     duration: (string) spell duration,
     description: (string) spell description,
+    ritual: (boolean) is or is not a ritual,
     id: (int) unique spell id
 }
 ```

@@ -10,9 +10,10 @@
         private $components;
         private $duration;
         private $description;
+        private $ritual;
         private $id;
 
-        function __construct($name, $school_id, $level, $casting_time, $cast_range, $components, $duration, $description, $id = NULL)
+        function __construct($name, $school_id, $level, $casting_time, $cast_range, $components, $duration, $description, $ritual, $id = NULL)
         {
             $this->name = $name;
             $this->school_id = intval($school_id);
@@ -22,6 +23,7 @@
             $this->components = $components;
             $this->duration = $duration;
             $this->description = $description;
+            $this->ritual = $ritual ? true : false;
             $this->id = $id;
         }
 
@@ -31,11 +33,12 @@
             $build['name'] = $this->name;
             $build['school'] = $this->getSchool();
             $build['level'] = $this->level;
-            $build['casting_time'] = $this->casting_time;
-            $build['cast_range'] = $this->cast_range;
+            $build['castingTime'] = $this->casting_time;
+            $build['castRange'] = $this->cast_range;
             $build['components'] = $this->components;
             $build['duration'] = $this->duration;
             $build['description'] = $this->description;
+            $build['ritual'] = $this->ritual;
             $build['id'] = $this->id;
 
             return $build;
@@ -60,8 +63,8 @@
 
         function save()
         {
-            $save = $GLOBALS['DB']->prepare("INSERT INTO spells (name, school_id, level, casting_time, cast_range, components, duration, description) VALUES (:name, :school_id, :level, :casting_time, :cast_range, :components, :duration, :description);");
-            $save->execute(array(':name' => $this->name, ':school_id' => $this->school_id, ':level' => $this->level, ':casting_time' => $this->casting_time, ':cast_range' => $this->cast_range, ':components' => $this->components, ':duration' => $this->duration, ':description' => $this->description));
+            $save = $GLOBALS['DB']->prepare("INSERT INTO spells (name, school_id, level, casting_time, cast_range, components, duration, description, ritual) VALUES (:name, :school_id, :level, :casting_time, :cast_range, :components, :duration, :description, :ritual);");
+            $save->execute(array(':name' => $this->name, ':school_id' => $this->school_id, ':level' => $this->level, ':casting_time' => $this->casting_time, ':cast_range' => $this->cast_range, ':components' => $this->components, ':duration' => $this->duration, ':description' => $this->description, ':ritual' => $this->ritual));
             $this->id = $GLOBALS['DB']->lastInsertId();
         }
 
@@ -69,7 +72,7 @@
         {
             $query = $GLOBALS['DB']->query("SELECT * FROM schools WHERE id = {$this->school_id}");
             $school_info = $query->fetchAll();
-            return array($school_info[0]['name'], $school_info[0]['id']);
+            return array("name" => $school_info[0]['name'], "id" => $school_info[0]['id']);
         }
 
         static function buildAll()
@@ -110,27 +113,70 @@
 
         static function getAll()
         {
+            $spell_output = array();
             $returned_spells = $GLOBALS['DB']->query("SELECT * FROM spells;");
             if ($returned_spells) {
-                $spells = $returned_spells->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Spell', ['name', 'school_id', 'level', 'casting_time', 'cast_range', 'components', 'duration', 'description', 'id']);
+                $spells = $returned_spells->fetchAll();
+                for ($i = 0; $i < count($spells); $i++) {
+                $name = $spells[$i]['name'];
+                $school_id = $spells[$i]['school_id'];
+                $level = $spells[$i]['level'];
+                $casting_time = $spells[$i]['casting_time'];
+                $cast_range = $spells[$i]['cast_range'];
+                $components = $spells[$i]['components'];
+                $duration = $spells[$i]['duration'];
+                $description = $spells[$i]['description'];
+                $ritual = $spells[$i]['ritual'];
+                $id = $spells[$i]['id'];
+                $spell = new Spell($name, $school_id, $level, $casting_time, $cast_range, $components, $duration, $description, $ritual, $id);
+                $spell_output[] = $spell;
+              }
             } else {
-                $spells = [];
+                $spell_output = array();
             }
-            return $spells;
+            return $spell_output;
+        }
+
+        static function getAllSchools()
+        {
+            $schools = [];
+            $returned_schools = $GLOBALS['DB']->query("SELECT * FROM schools;");
+            if ($returned_schools) {
+                $fetched_schools = $returned_schools->fetchAll();
+                for ($i = 0; $i < count($fetched_schools); $i++) {
+                    $schools[] = array('name' => $fetched_schools[$i]['name'], 'id' => $fetched_schools[$i]['id']);
+                }
+            }
+            return $schools;
         }
 
         static function getByClass($class_id)
         {
-            $returned_spells = $GLOBALS['DB']->prepare("SELECT spells.name, spells.school_id, spells.level, spells.casting_time, spells.cast_range, spells.components, spells.duration, spells.description, spells.id FROM spells JOIN class_spells ON spells.id=class_spells.spell_id WHERE class_spells.class_id = :class_id");
+            $spell_output = array();
+            $returned_spells = $GLOBALS['DB']->prepare("SELECT spells.name, spells.school_id, spells.level, spells.casting_time, spells.cast_range, spells.components, spells.duration, spells.description, spells.ritual, spells.id FROM spells JOIN class_spells ON spells.id=class_spells.spell_id WHERE class_spells.class_id = :class_id");
             $returned_spells->bindParam(':class_id', $class_id);
             $returned_spells->execute();
 
             if ($returned_spells) {
-                $spells = $returned_spells->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Spell', ['spells.name', 'spells.school_id', 'spells.level', 'spells.casting_time', 'spells.cast_range', 'spells.components', 'spells.duration', 'spells.description', 'spells.id']);
+                $spells = $returned_spells->fetchAll();
+                for ($i = 0; $i < count($spells); $i++) {
+                $name = $spells[$i]['name'];
+                $school_id = $spells[$i]['school_id'];
+                $level = $spells[$i]['level'];
+                $casting_time = $spells[$i]['casting_time'];
+                $cast_range = $spells[$i]['cast_range'];
+                $components = $spells[$i]['components'];
+                $duration = $spells[$i]['duration'];
+                $description = $spells[$i]['description'];
+                $ritual = $spells[$i]['ritual'];
+                $id = $spells[$i]['id'];
+                $spell = new Spell($name, $school_id, $level, $casting_time, $cast_range, $components, $duration, $description, $ritual, $id);
+                $spell_output[] = $spell;
+              }
             } else {
-                $spells = [];
+                $spell_output = array();
             }
-            return $spells;
+            return $spell_output;
         }
 
         static function getById($id)
@@ -147,8 +193,9 @@
                 $components = $spell[0]['components'];
                 $duration = $spell[0]['duration'];
                 $description = $spell[0]['description'];
+                $ritual = $spell[0]['ritual'];
                 $id = $spell[0]['id'];
-                $spell_output = new Spell($name, $school_id, $level, $casting_time, $cast_range, $components, $duration, $description, $id);
+                $spell_output = new Spell($name, $school_id, $level, $casting_time, $cast_range, $components, $duration, $description, $ritual, $id);
             } else {
                 $spell_output = null;
             }
@@ -157,16 +204,31 @@
 
         static function getByRacialAbility($racial_ability_id)
         {
-            $returned_spells = $GLOBALS['DB']->prepare("SELECT spells.name, spells.school_id, spells.level, spells.casting_time, spells.cast_range, spells.components, spells.duration, spells.description, spells.id FROM spells JOIN racial_ability_spells ON spells.id=racial_ability_spells.spell_id WHERE racial_ability_spells.racial_ability_id = :racial_ability_id");
+            $spell_output = array();
+            $returned_spells = $GLOBALS['DB']->prepare("SELECT spells.name, spells.school_id, spells.level, spells.casting_time, spells.cast_range, spells.components, spells.duration, spells.description, spells.ritual, spells.id FROM spells JOIN racial_ability_spells ON spells.id=racial_ability_spells.spell_id WHERE racial_ability_spells.racial_ability_id = :racial_ability_id");
             $returned_spells->bindParam(':racial_ability_id', $racial_ability_id);
             $returned_spells->execute();
 
             if ($returned_spells) {
-                $spells = $returned_spells->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Spell', ['spells.name', 'spells.school_id', 'spells.level', 'spells.casting_time', 'spells.cast_range', 'spells.components', 'spells.duration', 'spells.description', 'spells.id']);
+                $spells = $returned_spells->fetchAll();
+                for ($i = 0; $i < count($spells); $i++) {
+                $name = $spells[$i]['name'];
+                $school_id = $spells[$i]['school_id'];
+                $level = $spells[$i]['level'];
+                $casting_time = $spells[$i]['casting_time'];
+                $cast_range = $spells[$i]['cast_range'];
+                $components = $spells[$i]['components'];
+                $duration = $spells[$i]['duration'];
+                $description = $spells[$i]['description'];
+                $ritual = $spells[$i]['ritual'];
+                $id = $spells[$i]['id'];
+                $spell = new Spell($name, $school_id, $level, $casting_time, $cast_range, $components, $duration, $description, $ritual, $id);
+                $spell_output[] = $spell;
+              }
             } else {
-                $spells = [];
+                $spell_output = array();
             }
-            return $spells;
+            return $spell_output;
         }
     }
 
