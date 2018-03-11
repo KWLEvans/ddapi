@@ -1,7 +1,5 @@
 <?php
 
-    require_once "Spell.php";
-
     class RacialAbility
     {
         private $name;
