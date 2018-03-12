@@ -4,12 +4,24 @@ class Article
 {
     public $title;
     public $content;
-    public $related_topics;
     public $id;
 
     function getId()
     {
         return $this->id;
+    }
+
+    function getRelatedArticles()
+    {
+        $related_titles = array();
+        $query = $GLOBALS['DB']->prepare("SELECT articles.title, articles.id FROM articles JOIN related_articles ON articles.id=related_articles.child_id WHERE related_articles.parent_id = :parent_id");
+        $query->execute([":parent_id" => $this->id]);
+        if (is_iterable($query)) {
+            for ($i = 0; $i < count($query); $i++) {
+                $related_titles[] = array($query[$i]['title'], $query[$i]['id']);
+            }
+        }
+        return json_encode($related_titles);
     }
 
     function save()
@@ -20,23 +32,16 @@ class Article
         return $this->getId();
     }
 
-    static function getAll()
+    static function getAllTitles()
     {
-        // HAVE TO TAKE INTO ACCOUNT HOW TO HANDLE RELATED ARTICLES
-        $returned_articles = $GLOBALS['DB']->query("SELECT * FROM articles;");
-        if ($returned_articles) {
-            $articles = $returned_articles->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Article', ['title', 'content', 'related_topics', 'id']);
-        } else {
-            $articles = [];
+        $all_titles = array();
+        $query = $GLOBALS['DB']->query("SELECT title, id FROM articles");
+        if (is_iterable($query)) {
+            for ($i = 0; $i < count($query); $i++) {
+                $all_titles[] = array($query[$i]['title'], $query[$i]['id']);
+            }
         }
-        return $articles;
-    }
-
-    static function getById($id)
-    {
-        $returned_article = $GLOBALS['DB']->query("SELECT * FROM articles WHERE id = {$id};");
-        $article = $returned_article->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Article', ['title', 'content', 'id']);
-        return $article[0];
+        return json_encode($all_titles);
     }
 }
 

@@ -12,6 +12,14 @@
         static function route($route, $data)
         {
             switch ($route) {
+                //ARTICLES
+                case "add_article":
+                    return Router::addArticle($data);
+                    break;
+                case "get_all_article_titles":
+                    return Article::getAllTitles();
+                    break;
+                //SPELLS
                 case "add_spell":
                     return Router::addSpell($data);
                     break;
@@ -30,6 +38,14 @@
             }
         }
 
+        static function addArticle($data)
+        {
+            $title = $data->title;
+            $content = $data->content;
+            $article = new Article($title, $content);
+            return $article->save();
+        }
+
         static function addSpell($data) {
             $name = $data->name;
             $school_id = $data->school_id;
@@ -41,8 +57,7 @@
             $description = $data->description;
             $ritual = $data->ritual;
             $spell = new Spell($name, $school_id, $level, $casting_time, $cast_range, $components, $duration, $description, $ritual);
-            $spell->save();
-            return $spell->getId();
+            return $spell->save();
         }
 
     }

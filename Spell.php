@@ -66,6 +66,7 @@
             $save = $GLOBALS['DB']->prepare("INSERT INTO spells (name, school_id, level, casting_time, cast_range, components, duration, description, ritual) VALUES (:name, :school_id, :level, :casting_time, :cast_range, :components, :duration, :description, :ritual);");
             $save->execute(array(':name' => $this->name, ':school_id' => $this->school_id, ':level' => $this->level, ':casting_time' => $this->casting_time, ':cast_range' => $this->cast_range, ':components' => $this->components, ':duration' => $this->duration, ':description' => $this->description, ':ritual' => $this->ritual));
             $this->id = $GLOBALS['DB']->lastInsertId();
+            return $this->id;
         }
 
         function getSchool()
